@@ -6,18 +6,22 @@ from sqlalchemy_utils import create_database, database_exists
 app = Flask(__name__)
 
 # Base de datos
-db_usuario = ""
-db_clave = ""
-db_host = ""
-db_nombre = ""
+db_usuario = "root"
+db_clave = "theCRONY.13"
+db_host = "localhost"
+db_nombre = "db_api_dbz"
 
 DB_URL = f"mysql+pymysql://{db_usuario}:{db_clave}@{db_host}/{db_nombre}"
 
-#inicializamos SQLAlchemy
+app.config["SQLALCHEMY_DATABASE_URI"] = DB_URL
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+# inicializamos SQLAlchemy
 db.init_app(app)
 
+
 @app.route('/', methods=['GET'])
-def inicio():
+def index():
     return "<h1>Hola</h1>"
 
 
