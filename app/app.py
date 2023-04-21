@@ -1,7 +1,13 @@
 from flask import Flask
 from database import db
 from sqlalchemy_utils import create_database, database_exists
+from routes.routes import blue_print
+from flask_jwt_extended import JWTManager
+import os
+import datetime
 
+# generar llave aleatoria
+secret_key = os.urandom(24)
 
 app = Flask(__name__)
 
@@ -16,13 +22,18 @@ DB_URL = f"mysql+pymysql://{db_usuario}:{db_clave}@{db_host}/{db_nombre}"
 app.config["SQLALCHEMY_DATABASE_URI"] = DB_URL
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+# asignar la llave a la configuración de Flask-JWT
+app.config['JWT_SECRET_KEY'] = secret_key
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = datetime.timedelta(hours=1)
+
+# JWT
+jwt = JWTManager(app)
 # inicializamos SQLAlchemy
 db.init_app(app)
 
 
-@app.route('/', methods=['GET'])
-def index():
-    return "<h1>Hola</h1>"
+# instanciamos las rutas
+app.register_blueprint(blue_print)
 
 
 # Creamos la base de datos
