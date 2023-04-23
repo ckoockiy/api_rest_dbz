@@ -19,7 +19,7 @@ class Personaje(db.Model):
     raza = db.Column(db.String(50), nullable=False)
     planeta = db.Column(db.String(50), nullable=False)
     descripcion = db.Column(db.Text, nullable=False)
-    imagen = db.Column(db.String(200), nullable=False)
+    imagen = db.Column(db.LargeBinary(), nullable=False)
     edad = db.Column(db.Integer, nullable=False)
     altura = db.Column(db.Integer, nullable=False)
     peso = db.Column(db.Integer, nullable=False)

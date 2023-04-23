@@ -1,10 +1,15 @@
 from flask import Blueprint, request, jsonify, make_response
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
+from flask import current_app
+
 from models.models import Usuario, Personaje
 from schema.schemas import personaje_schema, personajes_schema
 from database import db
+from utils import allowed_file
+
 import bcrypt
 from http import HTTPStatus
+import os
 
 
 blue_print = Blueprint("app", __name__)
@@ -74,24 +79,32 @@ def iniciar_sesion():
 @jwt_required()
 def crear_personaje():
     try:
-        nombre = request.json['nombre']
-        raza = request.json['raza']
-        planeta = request.json['planeta']
-        descripcion = request.json['descripcion']
-        imagen = request.json['imagen']
-        edad = request.json['edad']
-        altura = request.json['altura']
-        peso = request.json['peso']
-        poderpelea = request.json['poderpelea']
-        habilidades = request.json['habilidades']
 
-        nuevo_personaje = Personaje(
-            nombre, raza, planeta, descripcion, imagen, edad, altura, peso, poderpelea, habilidades)
+        nombre = request.form['nombre']
+        raza = request.form['raza']
+        planeta = request.form['planeta']
+        descripcion = request.form['descripcion']
+        imagen = request.files['imagen']
+        edad = request.form['edad']
+        altura = request.form['altura']
+        peso = request.form['peso']
+        poderpelea = request.form['poderpelea']
+        habilidades = request.form['habilidades']
+
+        imagen_filename = imagen.filename.encode('utf-8')
+        nuevo_personaje = Personaje(nombre, raza, planeta, descripcion,
+                                    imagen_filename, edad, altura, peso, poderpelea, habilidades)
 
         db.session.add(nuevo_personaje)
         db.session.commit()
 
-        return make_response(jsonify({'respuesta': 'Personaje Creado Exitosamente'}), HTTPStatus.CREATED)
+        # Verificar si la transacción fue exitosa
+        if nuevo_personaje.id is not None:
+            # Guardar la imagen en el sistema de archivos
+            imagen.save(os.path.join(
+                current_app.config['UPLOAD_FOLDER'], imagen.filename))
+            return make_response(jsonify({'respuesta': 'Personaje Creado Exitosamente'}), HTTPStatus.CREATED)
+
     except Exception:
         return make_response(jsonify({'respuesta': 'Error en la peticion'}), HTTPStatus.INTERNAL_SERVER_ERROR)
 

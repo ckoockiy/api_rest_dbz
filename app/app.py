@@ -9,6 +9,11 @@ import datetime
 # generar llave aleatoria
 secret_key = os.urandom(24)
 
+UPLOAD_FOLDER = os.path.abspath("app/uploads")
+ALLOWED_EXTENSIONS = {"png"}
+
+
+
 app = Flask(__name__)
 
 # Base de datos
@@ -25,6 +30,12 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 # asignar la llave a la configuración de Flask-JWT
 app.config['JWT_SECRET_KEY'] = secret_key
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = datetime.timedelta(hours=1)
+
+# carpeta de archivos
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+app.config["ALLOWED_EXTENSIONS"] = ALLOWED_EXTENSIONS
+
+
 
 # JWT
 jwt = JWTManager(app)
