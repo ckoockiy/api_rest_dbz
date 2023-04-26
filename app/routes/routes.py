@@ -13,7 +13,6 @@ from http import HTTPStatus
 import os
 
 
-
 blue_print = Blueprint("app", __name__)
 
 
@@ -109,7 +108,7 @@ def iniciar_sesion():
 
             return make_response(jsonify({'access_token': access_token}), HTTPStatus.OK)
         current_app.logger.warning(
-                f'Se intentó iniciar sesion con un usuario {usuario} o clave {clave} incorrecto. Dirección IP: {request.remote_addr}')
+            f'Se intentó iniciar sesion con un usuario {usuario} o clave {clave} incorrecto. Dirección IP: {request.remote_addr}')
         return make_response(jsonify({'respuesta': 'Clave o Usuario Incorrecto'}), HTTPStatus.NOT_FOUND)
     except Exception:
 
@@ -214,6 +213,7 @@ def obtener_personaje_id(id):
 
         current_app.logger.info(
             f'Se encontró el personaje solicitado con id: {id}, Dirección IP: {request.remote_addr}')
+
         return personaje_schema.jsonify(personaje), HTTPStatus.OK
     except Exception:
         current_app.logger.error(
@@ -225,9 +225,6 @@ def obtener_personaje_id(id):
 @blue_print.route('/api/personajes/<int:id>', methods=['PUT'])
 @jwt_required()
 def actualizar_personaje(id):
-    """
-    FALTA ELIMINAR LA IMAGEN QUE SE VA A ACTUALIZAR DE LA CARPETA UPLOADS DE LA CARPETA UPLOADS 
-    """
     try:
 
         personaje = Personaje.query.get(id)
@@ -241,11 +238,27 @@ def actualizar_personaje(id):
 
         for campo in campos:
             if campo == 'imagen' and campo in request.files:
+                # Removemos la imagen antigua antes de guardar la imagen nueva
+                imagen_eliminar = personaje.imagen.decode("utf-8")
+                ruta_imagen_eliminar = os.path.join(
+                    current_app.config['UPLOAD_FOLDER'], imagen_eliminar)
+
+                if os.path.exists(ruta_imagen_eliminar):
+                    os.remove(ruta_imagen_eliminar)
+                    current_app.logger.info(
+                        f"El archivo {ruta_imagen_eliminar} fue eliminado exitosamente.")
+                else:
+                    current_app.logger.warning(
+                        f"El archivo {ruta_imagen_eliminar} no existe.")
+
                 # Guardar la imagen en el servidor con un nombre seguro
                 imagen = request.files['imagen']
                 filename = secure_filename(imagen.filename)
+
                 ruta_imagen = os.path.join(
                     current_app.config['UPLOAD_FOLDER'], filename)
+
+                # Guardamos la nueva imagen
                 imagen.save(ruta_imagen)
                 # Actualizar el atributo imagen del objeto personaje con la ruta de la imagen guardada en el servidor
                 setattr(personaje, campo, str(filename).encode("utf-8"))
