@@ -13,7 +13,6 @@ UPLOAD_FOLDER = os.path.abspath("app/uploads")
 ALLOWED_EXTENSIONS = {"png"}
 
 
-
 app = Flask(__name__)
 
 # Base de datos
@@ -34,7 +33,6 @@ app.config["JWT_ACCESS_TOKEN_EXPIRES"] = datetime.timedelta(hours=1)
 # carpeta de archivos
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["ALLOWED_EXTENSIONS"] = ALLOWED_EXTENSIONS
-
 
 
 # JWT
