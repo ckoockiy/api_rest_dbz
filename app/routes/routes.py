@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, make_response
+from flask import Blueprint, request, jsonify, make_response, url_for
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from flask import current_app
 from werkzeug.utils import secure_filename
@@ -184,6 +184,10 @@ def obtener_personajes():
         current_app.logger.info(
             f'Acceso exitoso a la ruta /api/personajes, Dirección IP: {request.remote_addr}')
 
+        for personaje in respuesta:
+            personaje['imagen'] = url_for(
+                'static', filename=f"images/{personaje['imagen']}", _external=True)
+
         # Devolver la respuesta con un código de estado HTTP 200 OK
         return respuesta, HTTPStatus.OK
 
@@ -214,8 +218,16 @@ def obtener_personaje_id(id):
         current_app.logger.info(
             f'Se encontró el personaje solicitado con id: {id}, Dirección IP: {request.remote_addr}')
 
-        return personaje_schema.jsonify(personaje), HTTPStatus.OK
-    except Exception:
+        # Obtener la ruta completa de la imagen
+        ruta_imagen = url_for("static", filename='images/' +
+                              personaje.imagen.decode("utf-8"), _external=True)
+
+        # Modificar el objeto JSON para incluir la URL completa de la imagen
+        response_data = personaje_schema.dump(personaje)
+        response_data['imagen'] = ruta_imagen
+
+        return jsonify(response_data), HTTPStatus.OK
+    except Exception as e:
         current_app.logger.error(
             f'Error en la petición obtener personaje ruta /api/personajes/<int:id>: {str(e)}, Dirección IP: {request.remote_addr}', exc_info=True)
         return make_response(jsonify({'respuesta': 'Error en la peticion'}), HTTPStatus.INTERNAL_SERVER_ERROR)
@@ -292,4 +304,3 @@ def eliminar_personaje_id(id):
         current_app.logger.error(
             f'Error al eliminar el personaje con ID {id}: {str(e)}, Dirección IP:{request.remote_addr}', exc_info=True)
         return make_response(jsonify({'respuesta': 'Error al eliminar el personaje'}), HTTPStatus.INTERNAL_SERVER_ERROR)
-

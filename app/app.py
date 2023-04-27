@@ -9,15 +9,15 @@ import datetime
 # generar llave aleatoria
 secret_key = os.urandom(24)
 
-UPLOAD_FOLDER = os.path.abspath("app/uploads")
+UPLOAD_FOLDER = os.path.abspath("app/static/images")
 ALLOWED_EXTENSIONS = {"png"}
 
 
 app = Flask(__name__)
 
 # Base de datos
-db_usuario = "YOUR-USERNAME"
-db_clave = "YOUR-PASSWORD"
+db_usuario = "your-username"
+db_clave = "your-password"
 db_host = "localhost"
 db_nombre = "db_api_dbz"
 

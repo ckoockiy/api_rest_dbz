@@ -5,6 +5,3 @@ __pycache__/
 *.pyd
 *.py~
 *.DS_Store
-images/
-app/uploads/*
-
