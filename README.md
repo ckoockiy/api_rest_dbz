@@ -28,12 +28,12 @@ python3 app.py
 ## Endpoints
 La API cuenta con los siguientes endpoints:
 
-POST /auth/registrar: permite registrar un usuario nuevo en la aplicación.
-POST /auth/login: permite autenticarse y obtener un token JWT para realizar peticiones.
-GET /api/personajes: devuelve una lista de todos los personajes almacenados en la base de datos.
-GET /api/personaje/{id}: devuelve la información de un personaje específico identificado por su id.
-POST /api/personajes: crea un nuevo personaje en la base de datos.
-PUT /api/personajes/{id}: actualiza la información de un personaje específico identificado por su id.
+POST /auth/registrar: permite registrar un usuario nuevo en la aplicación.  
+POST /auth/login: permite autenticarse y obtener un token JWT para realizar peticiones.  
+GET /api/personajes: devuelve una lista de todos los personajes almacenados en la base de datos.  
+GET /api/personaje/{id}: devuelve la información de un personaje específico identificado por su id.  
+POST /api/personajes: crea un nuevo personaje en la base de datos.  
+PUT /api/personajes/{id}: actualiza la información de un personaje específico identificado por su id.  
 DELETE /api/personajes/{id}: elimina un personaje específico identificado por su id.
 
 ## Ejemplos de uso
