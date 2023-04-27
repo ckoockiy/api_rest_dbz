@@ -16,8 +16,8 @@ ALLOWED_EXTENSIONS = {"png"}
 app = Flask(__name__)
 
 # Base de datos
-db_usuario = "root"
-db_clave = "theCRONY.13"
+db_usuario = "YOUR-USERNAME"
+db_clave = "YOUR-PASSWORD"
 db_host = "localhost"
 db_nombre = "db_api_dbz"
 
